@@ -67,9 +67,12 @@ export default function SignupPage() {
     if (password !== confirm) { setError('Passwords do not match.'); return; }
     if (password.length < 6)  { setError('Password must be at least 6 characters.'); return; }
     setLoading(true); setError('');
-    try { await signup(name.trim(), email, password); navigate('/dashboard'); }
-    catch { setError('Something went wrong. Please try again.'); }
-    finally { setLoading(false); }
+    try {
+      const user = await signup(name.trim(), email, password);
+      navigate(user.isAdmin ? '/admin' : '/dashboard');
+    } catch (err: any) {
+      setError(err.message ?? 'Something went wrong. Please try again.');
+    } finally { setLoading(false); }
   };
 
   const inputStyle: React.CSSProperties = {

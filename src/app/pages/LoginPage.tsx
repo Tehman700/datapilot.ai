@@ -45,9 +45,12 @@ export default function LoginPage() {
     e.preventDefault();
     if (!email.trim() || !password.trim()) { setError('Please fill in all fields.'); return; }
     setLoading(true); setError('');
-    try { await login(email, password); navigate('/dashboard'); }
-    catch { setError('Something went wrong. Please try again.'); }
-    finally { setLoading(false); }
+    try {
+      const user = await login(email, password);
+      navigate(user.isAdmin ? '/admin' : '/dashboard');
+    } catch (err: any) {
+      setError(err.message ?? 'Something went wrong. Please try again.');
+    } finally { setLoading(false); }
   };
 
   const inputStyle: React.CSSProperties = {

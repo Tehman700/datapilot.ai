@@ -1,3 +1,4 @@
+import { motion } from 'motion/react';
 import { Clock, Star } from 'lucide-react';
 
 interface Version {
@@ -14,6 +15,15 @@ interface VersionControlProps {
   onVersionSelect: (versionId: string) => void;
 }
 
+const stagger = {
+  hidden:  {},
+  visible: { transition: { staggerChildren: 0.09, delayChildren: 0.1 } },
+};
+const fadeUp = {
+  hidden:  { opacity: 0, x: 20 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.45, ease: [0.16, 1, 0.3, 1] as const } },
+};
+
 export function VersionControl({ versions, selectedVersion, onVersionSelect }: VersionControlProps) {
   const getBiasColor = (score: number) => {
     if (score < 0.3) return '#10B981';
@@ -23,17 +33,29 @@ export function VersionControl({ versions, selectedVersion, onVersionSelect }: V
 
   return (
     <div className="h-[45%] bg-background border-b border-border p-6 overflow-y-auto transition-colors duration-300">
-      <div className="flex items-center gap-2 mb-4">
-        <Clock className="h-5 w-5 text-[#A3E635]" />
+      <motion.div
+        initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="flex items-center gap-2 mb-4"
+      >
+        <motion.div
+          animate={{ rotate: [0, 360] }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+        >
+          <Clock className="h-5 w-5 text-[#A3E635]" />
+        </motion.div>
         <h3 className="font-semibold text-foreground">Version History</h3>
-      </div>
+      </motion.div>
 
-      <div className="space-y-3">
+      <motion.div className="space-y-3" variants={stagger} initial="hidden" animate="visible">
         {versions.map((version) => (
-          <button
+          <motion.button
             key={version.id}
+            variants={fadeUp}
             onClick={() => onVersionSelect(version.id)}
-            className={`w-full p-4 rounded-xl border transition-all duration-200 text-left ${
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className={`w-full p-4 rounded-xl border transition-colors duration-200 text-left ${
               selectedVersion === version.id
                 ? 'bg-muted border-[#A3E635] shadow-lg shadow-[#A3E635]/10'
                 : 'bg-card border-border hover:border-[#A3E635]/50 hover:bg-muted'
@@ -44,34 +66,42 @@ export function VersionControl({ versions, selectedVersion, onVersionSelect }: V
                 <div className="flex items-center gap-2 mb-1">
                   <h4 className="text-sm font-semibold text-foreground">{version.name}</h4>
                   {version.isBest && (
-                    <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#A3E635]/10 border border-[#A3E635]/30">
+                    <motion.div
+                      initial={{ scale: 0 }} animate={{ scale: 1 }}
+                      transition={{ type: 'spring', stiffness: 400, delay: 0.3 }}
+                      className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#A3E635]/10 border border-[#A3E635]/30"
+                    >
                       <Star className="h-3 w-3 text-[#A3E635] fill-[#A3E635]" />
                       <span className="text-xs text-[#A3E635] font-medium">Best</span>
-                    </div>
+                    </motion.div>
                   )}
                 </div>
                 <p className="text-xs text-muted-foreground">{version.timestamp}</p>
               </div>
-              <div
+              <motion.div
+                key={version.biasScore}
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{ duration: 0.3 }}
                 className="text-xl font-bold"
                 style={{ color: getBiasColor(version.biasScore) }}
               >
                 {version.biasScore.toFixed(2)}
-              </div>
+              </motion.div>
             </div>
 
+            {/* Animated progress bar */}
             <div className="h-1 w-full bg-border rounded-full overflow-hidden">
-              <div
-                className="h-full rounded-full transition-all duration-500"
-                style={{
-                  width: `${version.biasScore * 100}%`,
-                  backgroundColor: getBiasColor(version.biasScore)
-                }}
+              <motion.div
+                className="h-full rounded-full"
+                initial={{ width: 0 }}
+                animate={{ width: `${version.biasScore * 100}%` }}
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+                style={{ backgroundColor: getBiasColor(version.biasScore) }}
               />
             </div>
-          </button>
+          </motion.button>
         ))}
-      </div>
+      </motion.div>
     </div>
   );
 }

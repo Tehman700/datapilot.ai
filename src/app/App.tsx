@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion } from 'motion/react';
 import { Navbar } from './components/Navbar';
 import { Sidebar } from './components/Sidebar';
 import { ChatPanel } from './components/ChatPanel';
@@ -30,75 +31,28 @@ interface Version {
 }
 
 export default function App() {
-  const [biasScore, setBiasScore] = useState(0.68);
-  const [genderBias, setGenderBias] = useState(0.42);
+  const [biasScore, setBiasScore]       = useState(0.68);
+  const [genderBias, setGenderBias]     = useState(0.42);
   const [dataImbalance, setDataImbalance] = useState(0.31);
-  const [confidence] = useState(87);
-  const [biasHistory] = useState([0.85, 0.78, 0.72, 0.68, 0.65, 0.68]);
+  const [confidence]                    = useState(87);
+  const [biasHistory]                   = useState([0.85, 0.78, 0.72, 0.68, 0.65, 0.68]);
 
   const [recommendations] = useState<Recommendation[]>([
-    {
-      id: '1',
-      title: 'Normalize Income',
-      reason: 'Reduces gender bias by 12%',
-      impact: 0.12
-    },
-    {
-      id: '2',
-      title: 'Balance Age Groups',
-      reason: 'Equal representation across demographics',
-      impact: 0.08
-    },
-    {
-      id: '3',
-      title: 'Remove Regional Outliers',
-      reason: 'Eliminates location-based skew',
-      impact: 0.15
-    },
-    {
-      id: '4',
-      title: 'Standardize Education Levels',
-      reason: 'Consistent encoding reduces bias',
-      impact: 0.07
-    }
+    { id: '1', title: 'Normalize Income',           reason: 'Reduces gender bias by 12%',             impact: 0.12 },
+    { id: '2', title: 'Balance Age Groups',         reason: 'Equal representation across demographics', impact: 0.08 },
+    { id: '3', title: 'Remove Regional Outliers',  reason: 'Eliminates location-based skew',           impact: 0.15 },
+    { id: '4', title: 'Standardize Education Levels', reason: 'Consistent encoding reduces bias',      impact: 0.07 },
   ]);
 
   const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      type: 'user',
-      content: 'Remove outliers in age column',
-      timestamp: '10 min ago'
-    },
-    {
-      id: '2',
-      type: 'ai',
-      content: 'Action taken: 124 outliers removed. Explanation: Age outliers were skewing gender comparison and creating artificial bias in income distribution.',
-      biasChange: { from: 0.72, to: 0.68 },
-      timestamp: '10 min ago'
-    }
+    { id: '1', type: 'user', content: 'Remove outliers in age column', timestamp: '10 min ago' },
+    { id: '2', type: 'ai',   content: 'Action taken: 124 outliers removed. Explanation: Age outliers were skewing gender comparison and creating artificial bias in income distribution.', biasChange: { from: 0.72, to: 0.68 }, timestamp: '10 min ago' },
   ]);
 
   const [versions] = useState<Version[]>([
-    {
-      id: '1',
-      name: 'Raw Data',
-      timestamp: '15 min ago',
-      biasScore: 0.85
-    },
-    {
-      id: '2',
-      name: 'Normalized Income',
-      timestamp: '12 min ago',
-      biasScore: 0.72
-    },
-    {
-      id: '3',
-      name: 'Removed Outliers',
-      timestamp: '10 min ago',
-      biasScore: 0.68,
-      isBest: true
-    }
+    { id: '1', name: 'Raw Data',          timestamp: '15 min ago', biasScore: 0.85 },
+    { id: '2', name: 'Normalized Income', timestamp: '12 min ago', biasScore: 0.72 },
+    { id: '3', name: 'Removed Outliers',  timestamp: '10 min ago', biasScore: 0.68, isBest: true },
   ]);
 
   const [selectedVersion, setSelectedVersion] = useState('3');
@@ -106,22 +60,8 @@ export default function App() {
   const handleRecommendationClick = (rec: Recommendation) => {
     const newBiasScore = Math.max(0, biasScore - rec.impact);
     const timestamp = 'Just now';
-
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      type: 'user',
-      content: `Apply recommendation: ${rec.title}`,
-      timestamp
-    };
-
-    const aiMessage: Message = {
-      id: (Date.now() + 1).toString(),
-      type: 'ai',
-      content: `Action completed: ${rec.title}. ${rec.reason}`,
-      biasChange: { from: biasScore, to: newBiasScore },
-      timestamp
-    };
-
+    const userMessage: Message = { id: Date.now().toString(), type: 'user', content: `Apply recommendation: ${rec.title}`, timestamp };
+    const aiMessage:   Message = { id: (Date.now() + 1).toString(), type: 'ai', content: `Action completed: ${rec.title}. ${rec.reason}`, biasChange: { from: biasScore, to: newBiasScore }, timestamp };
     setMessages([...messages, userMessage, aiMessage]);
     setBiasScore(newBiasScore);
     setGenderBias(Math.max(0, genderBias - rec.impact * 0.5));
@@ -130,24 +70,10 @@ export default function App() {
 
   const handleSendMessage = (content: string) => {
     const timestamp = 'Just now';
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      type: 'user',
-      content,
-      timestamp
-    };
-
+    const userMessage: Message = { id: Date.now().toString(), type: 'user', content, timestamp };
     const reduction = 0.03 + Math.random() * 0.05;
     const newBiasScore = Math.max(0, biasScore - reduction);
-
-    const aiMessage: Message = {
-      id: (Date.now() + 1).toString(),
-      type: 'ai',
-      content: `Action completed. Your request has been processed and applied to the dataset. This modification has improved the bias metrics.`,
-      biasChange: { from: biasScore, to: newBiasScore },
-      timestamp
-    };
-
+    const aiMessage: Message = { id: (Date.now() + 1).toString(), type: 'ai', content: `Action completed. Your request has been processed and applied to the dataset. This modification has improved the bias metrics.`, biasChange: { from: biasScore, to: newBiasScore }, timestamp };
     setMessages([...messages, userMessage, aiMessage]);
     setBiasScore(newBiasScore);
   };
@@ -162,44 +88,60 @@ export default function App() {
   };
 
   return (
-    <div className="h-screen w-screen bg-background flex flex-col overflow-hidden transition-colors duration-300">
-      <Navbar
-        biasScore={biasScore}
-        genderBias={genderBias}
-        dataImbalance={dataImbalance}
-        confidence={confidence}
-        biasHistory={biasHistory}
-      />
+    <motion.div
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      transition={{ duration: 0.35 }}
+      className="h-screen w-screen bg-background flex flex-col overflow-hidden transition-colors duration-300"
+    >
+      <motion.div
+        initial={{ y: -64, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <Navbar biasScore={biasScore} genderBias={genderBias} dataImbalance={dataImbalance} confidence={confidence} biasHistory={biasHistory} />
+      </motion.div>
 
       <div className="flex-1 flex overflow-hidden">
-        <Sidebar
-          recommendations={recommendations}
-          onRecommendationClick={handleRecommendationClick}
-        />
+        <motion.div
+          initial={{ x: -280, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+        >
+          <Sidebar recommendations={recommendations} onRecommendationClick={handleRecommendationClick} />
+        </motion.div>
 
-        <div className="flex-1 flex">
-          <ChatPanel
-            messages={messages}
-            onSendMessage={handleSendMessage}
-            onUndo={handleUndo}
-          />
-        </div>
+        <motion.div
+          className="flex-1 flex"
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+        >
+          <ChatPanel messages={messages} onSendMessage={handleSendMessage} onUndo={handleUndo} />
+        </motion.div>
 
-        <div className="w-[380px] flex flex-col border-l border-border">
-          <VersionControl
-            versions={versions}
-            selectedVersion={selectedVersion}
-            onVersionSelect={setSelectedVersion}
-          />
+        <motion.div
+          className="w-[380px] flex flex-col border-l border-border"
+          initial={{ x: 380, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
+        >
+          <VersionControl versions={versions} selectedVersion={selectedVersion} onVersionSelect={setSelectedVersion} />
           <DataVisualization selectedVersion={selectedVersion} />
-        </div>
+        </motion.div>
       </div>
 
       {/* Download Button */}
-      <button className="fixed bottom-8 right-8 px-6 py-3 rounded-full bg-[#A3E635] hover:bg-[#10B981] border border-[#A3E635] text-[#0A0A0A] font-semibold flex items-center gap-2 shadow-lg shadow-[#A3E635]/20 transition-all hover:scale-105">
+      <motion.button
+        initial={{ opacity: 0, scale: 0.8, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.5 }}
+        whileHover={{ scale: 1.07, boxShadow: '0 8px 40px rgba(163,230,53,0.4)' }}
+        whileTap={{ scale: 0.95 }}
+        className="fixed bottom-8 right-8 px-6 py-3 rounded-full bg-[#A3E635] hover:bg-[#10B981] border border-[#A3E635] text-[#0A0A0A] font-semibold flex items-center gap-2 shadow-lg shadow-[#A3E635]/20 transition-colors"
+      >
         <Download className="h-5 w-5" />
         Download Dataset
-      </button>
-    </div>
+      </motion.button>
+    </motion.div>
   );
 }

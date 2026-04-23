@@ -135,9 +135,9 @@ export default function App() {
         initial={{ opacity: 0, scale: 0.8, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.5 }}
-        whileHover={{ scale: 1.07, boxShadow: '0 8px 40px rgba(163,230,53,0.4)' }}
+        whileHover={{ scale: 1.07, boxShadow: '0 8px 40px rgba(23,16,230,0.3)' }}
         whileTap={{ scale: 0.95 }}
-        className="fixed bottom-8 right-8 px-6 py-3 rounded-full bg-[#A3E635] hover:bg-[#10B981] border border-[#A3E635] text-[#0A0A0A] font-semibold flex items-center gap-2 shadow-lg shadow-[#A3E635]/20 transition-colors"
+        className="fixed bottom-8 right-8 px-6 py-3 rounded-sm bg-[#1710E6] hover:bg-[#0e0e12] border border-[#1710E6] text-[#f6f4ef] font-semibold flex items-center gap-2 shadow-lg shadow-[#1710E6]/20 transition-colors"
       >
         <Download className="h-5 w-5" />
         Download Dataset

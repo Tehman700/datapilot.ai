@@ -12,11 +12,11 @@ export function DataVisualization({ selectedVersion }: DataVisualizationProps) {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === 'dark';
 
-  const gridColor = isDark ? '#2A2A2A' : 'rgba(0,0,0,0.08)';
-  const axisColor = isDark ? '#71717A' : '#9CA3AF';
-  const tooltipBg = isDark ? '#1E1E1E' : '#ffffff';
-  const tooltipBorder = isDark ? '#2A2A2A' : 'rgba(0,0,0,0.1)';
-  const tooltipText = isDark ? '#D4D4D8' : '#030213';
+  const gridColor    = isDark ? 'rgba(246,244,239,0.08)' : 'rgba(14,14,18,0.07)';
+  const axisColor    = isDark ? '#8a8478' : '#6b6458';
+  const tooltipBg    = isDark ? '#16161c' : '#ffffff';
+  const tooltipBorder = isDark ? 'rgba(246,244,239,0.12)' : 'rgba(14,14,18,0.14)';
+  const tooltipText  = isDark ? '#f6f4ef' : '#0e0e12';
 
   const distributionData = [
     { range: '20-30', before: 45, after: 52 },
@@ -28,8 +28,8 @@ export function DataVisualization({ selectedVersion }: DataVisualizationProps) {
   ];
 
   const comparisonData = [
-    { group: 'Male', income: 65000 },
-    { group: 'Female', income: 62000 },
+    { group: 'Male',       income: 65000 },
+    { group: 'Female',     income: 62000 },
     { group: 'Non-binary', income: 63500 },
   ];
 
@@ -37,30 +37,32 @@ export function DataVisualization({ selectedVersion }: DataVisualizationProps) {
     <div className="h-[55%] bg-background p-6 overflow-y-auto transition-colors duration-300">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <BarChart3 className="h-5 w-5 text-[#A3E635]" />
-          <h3 className="font-semibold text-foreground">Data Visualization</h3>
+          <BarChart3 className="h-5 w-5" style={{ color: '#1710E6' }} />
+          <h3 className="font-semibold text-foreground text-sm">Data Visualization</h3>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 p-1 bg-muted rounded-lg">
+        <div className="flex gap-1 p-1 bg-muted rounded-sm">
           <button
             onClick={() => setActiveTab('distribution')}
-            className={`px-3 py-1.5 rounded text-xs font-medium transition-all ${
-              activeTab === 'distribution'
-                ? 'bg-[#A3E635] text-[#0A0A0A]'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
+            className="px-3 py-1.5 rounded-sm text-xs font-medium transition-all"
+            style={{
+              background: activeTab === 'distribution' ? '#1710E6' : 'transparent',
+              color: activeTab === 'distribution' ? '#f6f4ef' : undefined,
+              border: 'none', cursor: 'pointer', fontFamily: 'inherit',
+            }}
           >
             <Activity className="h-3 w-3 inline mr-1" />
             Distribution
           </button>
           <button
             onClick={() => setActiveTab('comparison')}
-            className={`px-3 py-1.5 rounded text-xs font-medium transition-all ${
-              activeTab === 'comparison'
-                ? 'bg-[#A3E635] text-[#0A0A0A]'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
+            className="px-3 py-1.5 rounded-sm text-xs font-medium transition-all text-muted-foreground hover:text-foreground"
+            style={{
+              background: activeTab === 'comparison' ? '#1710E6' : 'transparent',
+              color: activeTab === 'comparison' ? '#f6f4ef' : undefined,
+              border: 'none', cursor: 'pointer', fontFamily: 'inherit',
+            }}
           >
             <BarChart3 className="h-3 w-3 inline mr-1" />
             Comparison
@@ -68,50 +70,54 @@ export function DataVisualization({ selectedVersion }: DataVisualizationProps) {
         </div>
       </div>
 
-      <div className="h-[250px] bg-card rounded-xl border border-border p-4 transition-colors duration-300">
+      <div className="h-[250px] bg-card rounded-sm border border-border p-4 transition-colors duration-300">
         {activeTab === 'distribution' ? (
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={distributionData}>
               <defs>
                 <linearGradient id="beforeGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#6B7280" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#6B7280" stopOpacity={0} />
+                  <stop offset="5%"  stopColor="#6b6458" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#6b6458" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="afterGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#A3E635" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#A3E635" stopOpacity={0} />
+                  <stop offset="5%"  stopColor="#1710E6" stopOpacity={0.25} />
+                  <stop offset="95%" stopColor="#1710E6" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
-              <XAxis dataKey="range" stroke={axisColor} tick={{ fill: axisColor, fontSize: 12 }} />
-              <YAxis stroke={axisColor} tick={{ fill: axisColor, fontSize: 12 }} />
+              <XAxis dataKey="range" stroke={axisColor} tick={{ fill: axisColor, fontSize: 11, fontFamily: 'inherit' }} />
+              <YAxis stroke={axisColor} tick={{ fill: axisColor, fontSize: 11, fontFamily: 'inherit' }} />
               <Tooltip
                 contentStyle={{
                   backgroundColor: tooltipBg,
                   border: `1px solid ${tooltipBorder}`,
-                  borderRadius: '8px',
-                  color: tooltipText
+                  borderRadius: 4,
+                  color: tooltipText,
+                  fontFamily: 'inherit',
+                  fontSize: 12,
                 }}
               />
-              <Area type="monotone" dataKey="before" stroke="#6B7280" strokeWidth={2} fill="url(#beforeGradient)" name="Before" />
-              <Area type="monotone" dataKey="after" stroke="#A3E635" strokeWidth={2} fill="url(#afterGradient)" name="After" />
+              <Area type="monotone" dataKey="before" stroke="#6b6458" strokeWidth={2} fill="url(#beforeGradient)" name="Before" />
+              <Area type="monotone" dataKey="after"  stroke="#1710E6" strokeWidth={2} fill="url(#afterGradient)"  name="After" />
             </AreaChart>
           </ResponsiveContainer>
         ) : (
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={comparisonData}>
               <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
-              <XAxis dataKey="group" stroke={axisColor} tick={{ fill: axisColor, fontSize: 12 }} />
-              <YAxis stroke={axisColor} tick={{ fill: axisColor, fontSize: 12 }} />
+              <XAxis dataKey="group" stroke={axisColor} tick={{ fill: axisColor, fontSize: 11, fontFamily: 'inherit' }} />
+              <YAxis stroke={axisColor} tick={{ fill: axisColor, fontSize: 11, fontFamily: 'inherit' }} />
               <Tooltip
                 contentStyle={{
                   backgroundColor: tooltipBg,
                   border: `1px solid ${tooltipBorder}`,
-                  borderRadius: '8px',
-                  color: tooltipText
+                  borderRadius: 4,
+                  color: tooltipText,
+                  fontFamily: 'inherit',
+                  fontSize: 12,
                 }}
               />
-              <Bar dataKey="income" fill="#A3E635" radius={[8, 8, 0, 0]} />
+              <Bar dataKey="income" fill="#1710E6" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         )}
@@ -122,11 +128,11 @@ export function DataVisualization({ selectedVersion }: DataVisualizationProps) {
         {activeTab === 'distribution' && (
           <>
             <div className="flex items-center gap-2">
-              <div className="h-3 w-3 rounded-full bg-[#6B7280]" />
+              <div className="h-2.5 w-2.5 rounded-full" style={{ background: '#6b6458' }} />
               <span className="text-muted-foreground">Before correction</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="h-3 w-3 rounded-full bg-[#A3E635]" />
+              <div className="h-2.5 w-2.5 rounded-full" style={{ background: '#1710E6' }} />
               <span className="text-muted-foreground">After correction</span>
             </div>
           </>

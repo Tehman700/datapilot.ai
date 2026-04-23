@@ -26,9 +26,9 @@ const fadeUp = {
 
 export function VersionControl({ versions, selectedVersion, onVersionSelect }: VersionControlProps) {
   const getBiasColor = (score: number) => {
-    if (score < 0.3) return '#10B981';
-    if (score < 0.7) return '#F59E0B';
-    return '#EF4444';
+    if (score < 0.3) return '#8DC651';
+    if (score < 0.7) return '#e88c1a';
+    return '#d4183d';
   };
 
   return (
@@ -42,9 +42,9 @@ export function VersionControl({ versions, selectedVersion, onVersionSelect }: V
           animate={{ rotate: [0, 360] }}
           transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
         >
-          <Clock className="h-5 w-5 text-[#A3E635]" />
+          <Clock className="h-5 w-5" style={{ color: '#1710E6' }} />
         </motion.div>
-        <h3 className="font-semibold text-foreground">Version History</h3>
+        <h3 className="font-semibold text-foreground text-sm">Version History</h3>
       </motion.div>
 
       <motion.div className="space-y-3" variants={stagger} initial="hidden" animate="visible">
@@ -55,11 +55,15 @@ export function VersionControl({ versions, selectedVersion, onVersionSelect }: V
             onClick={() => onVersionSelect(version.id)}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className={`w-full p-4 rounded-xl border transition-colors duration-200 text-left ${
+            className={`w-full p-4 rounded-sm border transition-colors duration-200 text-left ${
               selectedVersion === version.id
-                ? 'bg-muted border-[#A3E635] shadow-lg shadow-[#A3E635]/10'
-                : 'bg-card border-border hover:border-[#A3E635]/50 hover:bg-muted'
+                ? 'bg-muted'
+                : 'bg-card border-border hover:bg-muted'
             }`}
+            style={{
+              borderColor: selectedVersion === version.id ? '#1710E6' : undefined,
+              boxShadow: selectedVersion === version.id ? '0 2px 12px rgba(23,16,230,0.1)' : undefined,
+            }}
           >
             <div className="flex items-start justify-between mb-2">
               <div className="flex-1">
@@ -69,10 +73,11 @@ export function VersionControl({ versions, selectedVersion, onVersionSelect }: V
                     <motion.div
                       initial={{ scale: 0 }} animate={{ scale: 1 }}
                       transition={{ type: 'spring', stiffness: 400, delay: 0.3 }}
-                      className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#A3E635]/10 border border-[#A3E635]/30"
+                      className="flex items-center gap-1 px-2 py-0.5 rounded-sm"
+                      style={{ background: 'rgba(141,198,81,0.18)', border: '1px solid rgba(141,198,81,0.45)' }}
                     >
-                      <Star className="h-3 w-3 text-[#A3E635] fill-[#A3E635]" />
-                      <span className="text-xs text-[#A3E635] font-medium">Best</span>
+                      <Star className="h-3 w-3" style={{ color: '#0e0e12', fill: '#8DC651' }} />
+                      <span className="text-xs font-medium" style={{ color: '#0e0e12' }}>Best</span>
                     </motion.div>
                   )}
                 </div>
@@ -89,7 +94,7 @@ export function VersionControl({ versions, selectedVersion, onVersionSelect }: V
               </motion.div>
             </div>
 
-            {/* Animated progress bar */}
+            {/* Progress bar */}
             <div className="h-1 w-full bg-border rounded-full overflow-hidden">
               <motion.div
                 className="h-full rounded-full"

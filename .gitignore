@@ -33,3 +33,6 @@ Thumbs.db
 .cache/
 .turbo/
 *.tsbuildinfo
+
+# Not track the claude folder
+.claude/
